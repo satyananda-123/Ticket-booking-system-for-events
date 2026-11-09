@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events - Premium Ticket Booking</title>
+    <meta name="description" content="Book your event tickets easily with Events.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css?v=2">
+</head>
+<body>
+    <div class="background-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="logo">Events<span>.</span></h1>
+            <ul class="nav-links">
+                <li><a href="#" class="active">Home</a></li>
+                <li id="myBookingsNav" class="hidden"><a href="#" id="viewBookingsBtn">My Bookings</a></li>
+                <li id="loginNav"><a href="#" id="loginBtn" class="btn-outline">Login / Sign Up</a></li>
+                <li id="logoutNav" class="hidden"><a href="#" id="logoutBtn" class="btn-outline">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <!-- Hero Section -->
+        <header class="header">
+            <h2 class="hero-title">Event <span>Booking</span></h2>
+        </header>
+
+        <!-- Events Grid -->
+        <section class="events-section">
+            <h3 class="section-title">Upcoming Events</h3>
+            <div class="events-grid" id="eventsGrid">
+                <!-- Events will be populated by JS -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Booking Modal -->
+    <div id="bookingModal" class="modal hidden">
+        <div class="modal-content glass-card">
+            <span class="close-booking-btn">&times;</span>
+            <h2>Book Ticket</h2>
+            <div id="selectedEventInfo" style="margin-bottom: 20px; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 8px;"></div>
+            <form id="ticketBookingForm" class="booking-form">
+                <input type="hidden" id="bookEventTitle">
+                <input type="hidden" id="bookEventDate">
+                <div class="form-group">
+                    <label for="ticketCount">Number of Tickets</label>
+                    <input type="number" id="ticketCount" name="ticketCount" min="1" max="10" value="1" required>
+                </div>
+                <button type="submit" class="submit-btn" id="proceedToPaymentBtn">
+                    <span class="btn-text">Proceed to Payment</span>
+                </button>
+                <div id="bookingFormMessage" class="form-message hidden"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="modal hidden">
+        <div class="modal-content glass-card">
+            <span class="close-payment-btn">&times;</span>
+            <h2>Complete Payment</h2>
+            <div id="paymentSummaryInfo" style="margin-bottom: 20px; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 8px;"></div>
+            <div class="payment-methods" style="display: flex; gap: 10px; margin-bottom: 15px;">
+                <label style="flex: 1; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 5px; cursor: pointer; text-align: center;">
+                    <input type="radio" name="payMethod" value="card" checked onchange="togglePaymentMethod()"> Credit/Debit Card
+                </label>
+                <label style="flex: 1; padding: 10px; background: rgba(255,255,255,0.1); border-radius: 5px; cursor: pointer; text-align: center;">
+                    <input type="radio" name="payMethod" value="upi" onchange="togglePaymentMethod()"> UPI
+                </label>
+            </div>
+            
+            <form id="paymentForm" class="booking-form">
+                <div id="cardFields">
+                    <div class="form-group">
+                        <label for="cardNumber">Card Number</label>
+                        <input type="text" id="cardNumber" name="cardNumber" placeholder="0000 0000 0000 0000" required maxlength="19">
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <div class="form-group" style="flex: 1;">
+                            <label for="cardExpiry">Expiry Date</label>
+                            <input type="text" id="cardExpiry" name="cardExpiry" placeholder="MM/YY" required maxlength="5">
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label for="cardCvv">CVV</label>
+                            <input type="password" id="cardCvv" name="cardCvv" placeholder="123" required maxlength="3">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="upiFields" class="hidden">
+                    <div class="form-group">
+                        <label for="upiId">Enter UPI ID</label>
+                        <input type="text" id="upiId" name="upiId" placeholder="username@bank">
+                    </div>
+                </div>
+                <button type="submit" class="submit-btn" id="confirmPaymentBtn">
+                    <span class="btn-text">Pay & Confirm Booking</span>
+                </button>
+                <div id="paymentFormMessage" class="form-message hidden"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Auth Modal (Login/Signup) -->
+    <div id="authModal" class="modal hidden">
+        <div class="modal-content glass-card">
+            <span class="close-auth-btn">&times;</span>
+            <h2 id="authTitle">Login</h2>
+            <form id="authForm" class="booking-form">
+                <div class="form-group" id="usernameGroup">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group hidden" id="fullNameGroup">
+                    <label for="fullName">Full Name</label>
+                    <input type="text" id="fullName" name="fullName">
+                </div>
+                <div class="form-group hidden" id="emailGroup">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="submit-btn" id="authSubmitBtn">
+                    <span class="btn-text">Login</span>
+                </button>
+                <p class="switch-mode">
+                    <span id="authSwitchText">Don't have an account? </span>
+                    <a href="#" id="authSwitchBtn">Sign Up</a>
+                </p>
+                <div id="authMessage" class="form-message hidden"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- My Bookings Modal -->
+    <div id="bookingsModal" class="modal hidden">
+        <div class="modal-content glass-card lg-modal">
+            <span class="close-bookings-btn">&times;</span>
+            <h2>My Bookings</h2>
+            <div id="bookingsList" class="bookings-list">
+                <p>Loading...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js?v=2"></script>
+</body>
+</html>
